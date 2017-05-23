@@ -91,152 +91,40 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 )
 
 cars_dataset =<span class="st"> </span>dwapi<span class="op">::</span><span class="kw">create_dataset</span>(<span class="kw">Sys.getenv</span>(<span class="st">&quot;DW_USER&quot;</span>), create_cars_dataset)
-cars_dataset
-<span class="co">#&gt; $uri</span>
-<span class="co">#&gt; [1] &quot;https://data.world/rflprr/my-cars-dataset-0-446630908409134&quot;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $message</span>
-<span class="co">#&gt; [1] &quot;Dataset created successfully.&quot;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; attr(,&quot;class&quot;)</span>
-<span class="co">#&gt; [1] &quot;create_dataset_response&quot;</span></code></pre></div>
+cars_dataset</code></pre></div>
 <p>Additional information can be added over time, with dataset updates.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">update_cars_dataset =<span class="st"> </span>dwapi<span class="op">::</span><span class="kw">dataset_update_request</span>(
   <span class="dt">description =</span> <span class="st">&quot;This is a dataset created from R's cars dataset.&quot;</span>
 )
 
-dwapi<span class="op">::</span><span class="kw">update_dataset</span>(cars_dataset<span class="op">$</span>uri, update_cars_dataset)
-<span class="co">#&gt; https://api.data.world/v0/datasets/rflprr/my-cars-dataset-0-446630908409134</span>
-<span class="co">#&gt; $message</span>
-<span class="co">#&gt; [1] &quot;Dataset updated successfully.&quot;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; attr(,&quot;class&quot;)</span>
-<span class="co">#&gt; [1] &quot;success_message&quot;</span></code></pre></div>
+dwapi<span class="op">::</span><span class="kw">update_dataset</span>(cars_dataset<span class="op">$</span>uri, update_cars_dataset)</code></pre></div>
 </div>
 <div id="uploading-files" class="section level2">
 <h2>Uploading files</h2>
 <p>Files can be added via URL, from the local file system, or directly as a data frame.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">upload_response &lt;-<span class="st"> </span>dwapi<span class="op">::</span><span class="kw">upload_data_frame</span>(cars_dataset<span class="op">$</span>uri, cars, <span class="st">&quot;cars.csv&quot;</span>)
-<span class="co">#&gt; tmp file /var/folders/vq/lcbclw1d7hg68t717fz0_ggr0000gn/T//RtmplCY4Pj/filee1ed3187d15dcsv created.</span>
-<span class="co">#&gt; </span>
-  <span class="op">|</span><span class="st">                                                                       </span>
-<span class="st">  </span><span class="er">|</span><span class="st">                                                                 </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%
-  <span class="op">|</span><span class="st">                                                                       </span>
-<span class="st">  </span><span class="er">|=================================================================|</span><span class="st"> </span><span class="dv">100</span>%
 <span class="kw">Sys.sleep</span>(<span class="dv">10</span>) <span class="co"># Files are processed asyncronously.</span>
-upload_response
-<span class="co">#&gt; $message</span>
-<span class="co">#&gt; [1] &quot;File uploaded.&quot;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; attr(,&quot;class&quot;)</span>
-<span class="co">#&gt; [1] &quot;success_message&quot;</span></code></pre></div>
+upload_response</code></pre></div>
 </div>
 <div id="tables-and-schemas-data-dictionary" class="section level2">
 <h2>Tables and schemas (data dictionary)</h2>
 <p>data.world extracts tabular data from various tabular data formats. Tables are a logical representation of tabular data that has been extracted and normalized.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tables =<span class="st"> </span>dwapi<span class="op">::</span><span class="kw">list_tables</span>(cars_dataset<span class="op">$</span>uri)
-tables
-<span class="co">#&gt; [1] &quot;cars&quot;</span></code></pre></div>
+tables</code></pre></div>
 <p>At this point, it is possible to review the schema of dataset tables.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dwapi<span class="op">::</span><span class="kw">get_table_schema</span>(cars_dataset<span class="op">$</span>uri, tables[[<span class="dv">1</span>]])
-<span class="co">#&gt; $fields</span>
-<span class="co">#&gt; $fields[[1]]</span>
-<span class="co">#&gt; $fields[[1]]$name</span>
-<span class="co">#&gt; [1] &quot;speed&quot;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $fields[[1]]$title</span>
-<span class="co">#&gt; [1] &quot;speed&quot;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $fields[[1]]$description</span>
-<span class="co">#&gt; NULL</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $fields[[1]]$rdf_type</span>
-<span class="co">#&gt; [1] &quot;http://www.w3.org/2001/XMLSchema#integer&quot;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $fields[[2]]</span>
-<span class="co">#&gt; $fields[[2]]$name</span>
-<span class="co">#&gt; [1] &quot;dist&quot;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $fields[[2]]$title</span>
-<span class="co">#&gt; [1] &quot;dist&quot;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $fields[[2]]$description</span>
-<span class="co">#&gt; NULL</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $fields[[2]]$rdf_type</span>
-<span class="co">#&gt; [1] &quot;http://www.w3.org/2001/XMLSchema#integer&quot;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; attr(,&quot;class&quot;)</span>
-<span class="co">#&gt; [1] &quot;table_schema_response&quot;</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dwapi<span class="op">::</span><span class="kw">get_table_schema</span>(cars_dataset<span class="op">$</span>uri, tables[[<span class="dv">1</span>]])</code></pre></div>
 <p>And also, to annotate fields, providing textual description to make datasets easier to understand and work with.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">update_cars_schema =<span class="st"> </span>dwapi<span class="op">::</span><span class="kw">table_schema_update_request</span>(
   <span class="dt">fields =</span> <span class="kw">list</span>(dwapi<span class="op">::</span><span class="kw">table_schema_field_update_request</span>(<span class="dt">name =</span> <span class="st">&quot;speed&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;Top speed&quot;</span>))
 )
 dwapi<span class="op">::</span><span class="kw">update_table_schema</span>(cars_dataset<span class="op">$</span>uri, tables[[<span class="dv">1</span>]], update_cars_schema)
-<span class="co">#&gt; $category</span>
-<span class="co">#&gt; [1] &quot;Success&quot;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $reason</span>
-<span class="co">#&gt; [1] &quot;OK&quot;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $message</span>
-<span class="co">#&gt; [1] &quot;Success: (200) OK&quot;</span>
-dwapi<span class="op">::</span><span class="kw">get_table_schema</span>(cars_dataset<span class="op">$</span>uri, tables[[<span class="dv">1</span>]])
-<span class="co">#&gt; $fields</span>
-<span class="co">#&gt; $fields[[1]]</span>
-<span class="co">#&gt; $fields[[1]]$name</span>
-<span class="co">#&gt; [1] &quot;speed&quot;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $fields[[1]]$title</span>
-<span class="co">#&gt; [1] &quot;speed&quot;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $fields[[1]]$description</span>
-<span class="co">#&gt; [1] &quot;Top speed&quot;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $fields[[1]]$rdf_type</span>
-<span class="co">#&gt; [1] &quot;http://www.w3.org/2001/XMLSchema#integer&quot;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $fields[[2]]</span>
-<span class="co">#&gt; $fields[[2]]$name</span>
-<span class="co">#&gt; [1] &quot;dist&quot;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $fields[[2]]$title</span>
-<span class="co">#&gt; [1] &quot;dist&quot;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $fields[[2]]$description</span>
-<span class="co">#&gt; NULL</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $fields[[2]]$rdf_type</span>
-<span class="co">#&gt; [1] &quot;http://www.w3.org/2001/XMLSchema#integer&quot;</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; attr(,&quot;class&quot;)</span>
-<span class="co">#&gt; [1] &quot;table_schema_response&quot;</span></code></pre></div>
+dwapi<span class="op">::</span><span class="kw">get_table_schema</span>(cars_dataset<span class="op">$</span>uri, tables[[<span class="dv">1</span>]])</code></pre></div>
 </div>
 <div id="queries" class="section level2">
 <h2>Queries</h2>
 <p>Datasets can be queried using SQL and SPARQL. Once again, it’s important to keep the concept of tables and their names in mind.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sql_query =<span class="st"> &quot;SELECT * FROM cars&quot;</span>
-dwapi<span class="op">::</span><span class="kw">sql</span>(cars_dataset<span class="op">$</span>uri, sql_query)
-<span class="co">#&gt; # A tibble: 50 × 2</span>
-<span class="co">#&gt;    speed  dist</span>
-<span class="co">#&gt;    &lt;int&gt; &lt;int&gt;</span>
-<span class="co">#&gt; 1      4     2</span>
-<span class="co">#&gt; 2      4    10</span>
-<span class="co">#&gt; 3     11    28</span>
-<span class="co">#&gt; 4     12    14</span>
-<span class="co">#&gt; 5     12    20</span>
-<span class="co">#&gt; 6     12    24</span>
-<span class="co">#&gt; 7     12    28</span>
-<span class="co">#&gt; 8     13    26</span>
-<span class="co">#&gt; 9     13    34</span>
-<span class="co">#&gt; 10    13    34</span>
-<span class="co">#&gt; # ... with 40 more rows</span></code></pre></div>
+dwapi<span class="op">::</span><span class="kw">sql</span>(cars_dataset<span class="op">$</span>uri, sql_query)</code></pre></div>
 </div>
 <div id="next" class="section level2">
 <h2>Next</h2>
@@ -250,7 +138,7 @@ dwapi<span class="op">::</span><span class="kw">sql</span>(cars_dataset<span cla
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

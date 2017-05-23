@@ -1,6 +1,6 @@
 Package: dwapi
 Title: A Client for Data.world's REST API
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person("Rafael", "Pereira", email = "rafael.pereira@data.world", role = c("aut", "cre")),
     person("Triet", "Le", email = "triet.le@data.world", role = c("aut")),
@@ -17,10 +17,10 @@ BugReports: https://github.com/datadotworld/dwapi-r/issues
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2017-05-12 14:26:23 UTC; rafael
+Packaged: 2017-05-23 22:10:18 UTC; rafael
 Author: Rafael Pereira [aut, cre],
   Triet Le [aut],
   Bryon Jacob [aut]
 Maintainer: Rafael Pereira <rafael.pereira@data.world>
 Repository: CRAN
-Date/Publication: 2017-05-18 09:30:21 UTC
+Date/Publication: 2017-05-23 22:29:42 UTC

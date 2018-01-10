@@ -23,19 +23,26 @@ dw_test_that <- function(...) {
   })
 
   options(dwapi.auth_token = "API_TOKEN")
-  return(testthat::test_that(...))
+
+  create_tmp_dir() #nolint
+  tryCatch({
+    return(testthat::test_that(...))
+  },
+    finally = {
+      cleanup_tmp_dir() #nolint
+    })
 }
 
 success_message_response <- function() {
   return(
-    success_message_response_with_content(
+    success_message_with_content(
       "resources/api.data.world/v0/SuccessMessage.sample.json",
       "application/json"
     )
   )
 }
 
-success_message_response_with_content <-
+success_message_with_content <-
   function(path_to_local_content, content_type) {
     content <- readBin(path_to_local_content,  what = "raw", n = 1e6)
     return (structure(
@@ -54,7 +61,7 @@ cleanup_tmp_dir <- function() {
 
 create_tmp_dir <- function() {
   tmp_dir <- tempdir()
-  if(!dir.exists(tmp_dir)) {
+  if (!dir.exists(tmp_dir)) {
     dir.create(tmp_dir, recursive = TRUE)
   }
   return(tmp_dir)

@@ -78,54 +78,83 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>For your security, do not include your API authentication token in code that is intended to be shared with others.</p>
 <p>Call this function via console, always when possible.</p>
 <p>If you must call it in code do not include the actual API token. Instead, pass the token via a variable in .Renviron, and do not share your <code>.Renviron</code> file. For example:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dwapi<span class="op">::</span><span class="kw">configure</span>(<span class="dt">auth_token =</span> <span class="kw">Sys.getenv</span>(<span class="st">&quot;DW_AUTH_TOKEN&quot;</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dwapi::<span class="kw">configure</span>(<span class="dt">auth_token =</span> <span class="kw">Sys.getenv</span>(<span class="st">&quot;DW_AUTH_TOKEN&quot;</span>))</code></pre></div>
 </div>
 </div>
 <div id="creating-datasets-and-updating-datasets" class="section level2">
 <h2>Creating datasets and updating datasets</h2>
 <p>Use <code>dwapi::create_dataset()</code> to create a new dataset. The library includes number of constructor functions to facilitate the praparation of complex requests like this. The example here is <code>dwapi::dataset_create_request()</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">create_cars_dataset &lt;-<span class="st"> </span>dwapi<span class="op">::</span><span class="kw">dataset_create_request</span>(
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">create_cars_dataset &lt;-<span class="st"> </span>dwapi::<span class="kw">dataset_create_request</span>(
   <span class="dt">title =</span> <span class="kw">sprintf</span>(<span class="st">&quot;My cars dataset %s&quot;</span>, <span class="kw">runif</span>(<span class="dv">1</span>)),
   <span class="dt">visibility =</span> <span class="st">&quot;PRIVATE&quot;</span>,
   <span class="dt">license_string =</span> <span class="st">&quot;Other&quot;</span>
 )
 
-cars_dataset &lt;-<span class="st"> </span>dwapi<span class="op">::</span><span class="kw">create_dataset</span>(<span class="kw">Sys.getenv</span>(<span class="st">&quot;DW_USER&quot;</span>), create_cars_dataset)
+cars_dataset &lt;-<span class="st"> </span>dwapi::<span class="kw">create_dataset</span>(<span class="kw">Sys.getenv</span>(<span class="st">&quot;DW_USER&quot;</span>), create_cars_dataset)
 cars_dataset</code></pre></div>
+<pre><code>## $uri
+## [1] &quot;https://data.world/testy-tester/my-cars-dataset-0-897647370351478&quot;
+## 
+## $message
+## [1] &quot;Dataset created successfully.&quot;
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;create_dataset_response&quot;</code></pre>
 <p>Additional information can be added over time, with dataset updates.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">update_cars_dataset &lt;-<span class="st"> </span>dwapi<span class="op">::</span><span class="kw">dataset_update_request</span>(
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">update_cars_dataset &lt;-<span class="st"> </span>dwapi::<span class="kw">dataset_update_request</span>(
   <span class="dt">description =</span> <span class="st">&quot;This is a dataset created from R's cars dataset.&quot;</span>
 )
 
-dwapi<span class="op">::</span><span class="kw">update_dataset</span>(cars_dataset<span class="op">$</span>uri, update_cars_dataset)</code></pre></div>
+dwapi::<span class="kw">update_dataset</span>(cars_dataset$uri, update_cars_dataset)</code></pre></div>
+<pre><code>## https://api.data.world/v0/datasets/testy-tester/my-cars-dataset-0-897647370351478</code></pre>
+<pre><code>## $message
+## [1] &quot;Dataset updated successfully.&quot;
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;success_message&quot;</code></pre>
 </div>
 <div id="uploading-files" class="section level2">
 <h2>Uploading files</h2>
 <p>Files can be added via URL, from the local file system, or directly as a data frame.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">upload_response &lt;-<span class="st"> </span>dwapi<span class="op">::</span><span class="kw">upload_data_frame</span>(cars_dataset<span class="op">$</span>uri, cars, <span class="st">&quot;cars.csv&quot;</span>)
-<span class="kw">Sys.sleep</span>(<span class="dv">10</span>) <span class="co"># Files are processed asyncronously.</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">upload_response &lt;-<span class="st"> </span>dwapi::<span class="kw">upload_data_frame</span>(cars_dataset$uri, cars, <span class="st">&quot;cars.csv&quot;</span>)</code></pre></div>
+<pre><code>## tmp file /tmp/Rtmpmb1ehi/file10c06e0f75c2csv created.</code></pre>
+<pre><code>## 
+Downloading: 48 B     
+Downloading: 48 B     
+Downloading: 48 B     
+Downloading: 48 B</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">Sys.sleep</span>(<span class="dv">10</span>) <span class="co"># Files are processed asyncronously.</span>
 upload_response</code></pre></div>
-</div>
-<div id="tables-and-schemas-data-dictionary" class="section level2">
-<h2>Tables and schemas (data dictionary)</h2>
-<p>data.world extracts tabular data from various tabular data formats. Tables are a logical representation of tabular data that has been extracted and normalized.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tables =<span class="st"> </span>dwapi<span class="op">::</span><span class="kw">list_tables</span>(cars_dataset<span class="op">$</span>uri)
-tables</code></pre></div>
-<p>At this point, it is possible to review the schema of dataset tables.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dwapi<span class="op">::</span><span class="kw">get_table_schema</span>(cars_dataset<span class="op">$</span>uri, tables[[<span class="dv">1</span>]])</code></pre></div>
-<p>And also, to annotate fields, providing textual description to make datasets easier to understand and work with.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">update_cars_schema &lt;-<span class="st"> </span>dwapi<span class="op">::</span><span class="kw">table_schema_update_request</span>(
-  <span class="dt">fields =</span> <span class="kw">list</span>(dwapi<span class="op">::</span><span class="kw">table_schema_field_update_request</span>(
-    <span class="dt">name =</span> <span class="st">&quot;speed&quot;</span>, <span class="dt">description =</span> <span class="st">&quot;Top speed&quot;</span>))
-)
-dwapi<span class="op">::</span><span class="kw">update_table_schema</span>(cars_dataset<span class="op">$</span>uri, tables[[<span class="dv">1</span>]], update_cars_schema)
-dwapi<span class="op">::</span><span class="kw">get_table_schema</span>(cars_dataset<span class="op">$</span>uri, tables[[<span class="dv">1</span>]])</code></pre></div>
+<pre><code>## $message
+## [1] &quot;File uploaded.&quot;
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;success_message&quot;</code></pre>
 </div>
 <div id="queries" class="section level2">
 <h2>Queries</h2>
 <p>Datasets can be queried using SQL and SPARQL. Once again, it’s important to keep the concept of tables and their names in mind.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sql_query &lt;-<span class="st"> &quot;SELECT * FROM cars&quot;</span>
-dwapi<span class="op">::</span><span class="kw">sql</span>(cars_dataset<span class="op">$</span>uri, sql_query)</code></pre></div>
+dwapi::<span class="kw">sql</span>(cars_dataset$uri, sql_query)</code></pre></div>
+<pre><code>## # A tibble: 50 x 2
+##    speed  dist
+##    &lt;int&gt; &lt;int&gt;
+##  1     4     2
+##  2     4    10
+##  3    11    28
+##  4    12    14
+##  5    12    20
+##  6    12    24
+##  7    12    28
+##  8    13    26
+##  9    13    34
+## 10    13    34
+## # ... with 40 more rows</code></pre>
+<pre><code>## $message
+## [1] &quot;Dataset has been successfully deleted.&quot;
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;success_message&quot;</code></pre>
 </div>
 <div id="next" class="section level2">
 <h2>Next</h2>

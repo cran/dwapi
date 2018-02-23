@@ -46,6 +46,13 @@ extract_dataset_key <- function(tentative_key) {
   return(url$path)
 }
 
+#' Extract the project key from URL or as provided
+#' @param tentative_key key or URL
+#' @return project key extracted form URL or as provided
+extract_project_key <- function(tentative_key) {
+  extract_dataset_key(tentative_key)
+}
+
 #' Parse simple responses (success or error).
 #' @param response httr response.
 #' @return Deserialized success or error.
@@ -93,10 +100,16 @@ convert_to_sparql_literal <- function(v) {
   iri_template <-
     switch(
       type,
-      logical = "\"%s\"^^<http://www.w3.org/2001/XMLSchema#boolean>",
-      numeric = "\"%s\"^^<http://www.w3.org/2001/XMLSchema#decimal>",
-      integer = "\"%s\"^^<http://www.w3.org/2001/XMLSchema#integer>",
-      character = "\"%s\""
+      logical = "%s^^<http://www.w3.org/2001/XMLSchema#boolean>",
+      numeric = "%s^^<http://www.w3.org/2001/XMLSchema#decimal>",
+      integer = "%s^^<http://www.w3.org/2001/XMLSchema#integer>",
+      character = "%s"
+    )
+  wrapped_v <-
+    switch(
+      type,
+      logical = sprintf("\"%s\"", tolower(v)),
+      sprintf("\"%s\"", v)
     )
   if (is.null(iri_template)) {
     stop(
@@ -108,5 +121,26 @@ convert_to_sparql_literal <- function(v) {
       )
     )
   }
-  return(sprintf(iri_template, v))
+  return(sprintf(iri_template, wrapped_v))
+}
+
+#' Determine if a value has NA or zero-length character elements, or is NULL
+#' @param value the value to test
+#' @return a boolean vector of the same length as \code{value}, whose elements
+#' are TRUE if the corresponding element in \code{value} is NA or zero-length
+#' character, and FALSE otherwise. If \code{value} is NULL, then a singleton
+#' TRUE vector is returned.
+#' @keywords internal
+is.blank <- function(value) {
+
+  if (is.null(value)) {
+    TRUE
+  } else {
+    if (!is.character(value)) {
+      warning(paste0("is.blank called on non-character vector of type ",
+                     class(value)))
+    }
+    is.na(value) | trimws(value) == ""
+  }
+
 }

@@ -1,3 +1,31 @@
+# 0.1.3
+
+* Wrapper functions for Streams API:
+  * `append_data_frame_to_stream`
+  * `append_record_to_stream`
+  * `append_values_to_stream`
+
+* Wrapper functions for Projects API:
+  * `create_project`
+  * `replace_project`
+  * `update_project`
+  * `get_project`
+  * `delete_project`
+  * `link_dataset`
+  * `unlink_dataset`
+  
+* Wrapper functions for Insights API:
+  * `get_insight`
+  * `get_insights`
+  * `delete_insight`
+  * `replace_insight`
+  * `update_insight`
+  
+* Wrapper functions for Datasets API:
+  * `delete_dataset`
+  
+* Misc improvements and bug fixes
+
 # 0.1.2
 
 * Address compatibility issues with testthat 2.0.0
